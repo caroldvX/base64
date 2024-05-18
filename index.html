@@ -43,6 +43,12 @@
         }
         #result {
             margin-top: 20px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            word-wrap: break-word;
+            max-width: 100%;
+            cursor: pointer; /* Adicionando cursor apontando */
         }
         @media (max-width: 768px) {
             h1 {
@@ -56,7 +62,7 @@
         <h1>URL to Base64URL Converter</h1>
         <input type="text" id="urlInput" placeholder="Enter URL">
         <button onclick="convertUrlToBase64url()">Convert</button>
-        <div id="result"></div>
+        <div id="result" onclick="copyToClipboard()"></div> <!-- Adicionando evento de clique para copiar -->
     </div>
 
     <script>
@@ -79,6 +85,18 @@
             } else {
                 document.getElementById('result').innerText = 'Por favor, insira uma URL.';
             }
+        }
+
+        // Função para copiar o conteúdo do resultado para a área de transferência
+        function copyToClipboard() {
+            const resultText = document.getElementById('result');
+            const range = document.createRange();
+            range.selectNode(resultText);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            alert('Resultado copiado para a área de transferência!');
         }
     </script>
 </body>
