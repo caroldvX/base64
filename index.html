@@ -62,7 +62,7 @@
         <h1>URL to Base64URL Converter</h1>
         <input type="text" id="urlInput" placeholder="Enter URL">
         <button onclick="convertUrlToBase64url()">Convert</button>
-        <div id="result" onclick="copyToClipboard()"></div> <!-- Adicionando evento de clique para copiar -->
+        <div id="result" onclick="copyToClipboard()"></div> <!-- Removido o texto fixo -->
     </div>
 
     <script>
@@ -98,6 +98,25 @@
             window.getSelection().removeAllRanges();
             alert('Resultado copiado para a área de transferência!');
         }
+
+        // Função para pegar o parâmetro da URL
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            const results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Verifica se há uma URL fornecida na query string e exibe o resultado
+        document.addEventListener('DOMContentLoaded', () => {
+            const url = getParameterByName('url');
+            if (url) {
+                const base64url = urlToBase64url(url);
+                document.getElementById('result').innerText = base64url;
+            }
+        });
     </script>
 </body>
 </html>
