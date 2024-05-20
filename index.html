@@ -22,7 +22,11 @@
             const urlParams = new URLSearchParams(window.location.search);
             const imageUrl = urlParams.get('url');
             if (imageUrl) {
-                const base64url = urlToBase64url(imageUrl);
+                // Substitui {{foto}} pelo valor da variável no URL da imagem
+                const baseUrl = 'https://caroldvx.github.io/base64/?url=';
+                const fullUrl = `${baseUrl}${imageUrl}`;
+                // Obtém a URL completa da imagem e converte para Base64URL
+                const base64url = urlToBase64url(fullUrl);
                 const result = { base64url: base64url };
                 document.getElementById('result').innerText = JSON.stringify(result);
             } else {
