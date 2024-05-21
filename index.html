@@ -4,39 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL to Base64URL Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f06d06;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            margin-right: 10px;
+            width: calc(100% - 130px);
+            max-width: 300px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            word-wrap: break-word;
+            max-width: 100%;
+            cursor: pointer; /* Adicionando cursor apontando */
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="result"></div>
+    <div class="container">
+        <h1>URL to Base64URL Converter</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button onclick="convertUrlToBase64url()">Convert</button>
+        <div id="result" onclick="copyToClipboard()"></div> <!-- Removido o texto fixo -->
+    </div>
 
     <script>
         // Função para converter URL para Base64URL
         function urlToBase64url(url) {
-            return btoa(url)
+            const base64url = btoa(url)
                 .replace(/\+/g, '-')
                 .replace(/\//g, '_')
                 .replace(/=/g, '');
+            return base64url;
         }
 
-        // Função para processar a solicitação GET
-        function handleRequest() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const imageUrl = urlParams.get('url');
-            if (imageUrl) {
-                // Substitui {{foto}} pelo valor da variável no URL da imagem
-                const baseUrl = 'https://caroldvx.github.io/base64/?url=';
-                const fullUrl = `${baseUrl}${imageUrl}`;
-                // Obtém a URL completa da imagem e converte para Base64URL
-                const base64url = urlToBase64url(fullUrl);
-                const result = { base64url: base64url };
-                document.getElementById('result').innerText = JSON.stringify(result);
+        // Função para converter URL de entrada para Base64URL
+        function convertUrlToBase64url() {
+            const url = document.getElementById('urlInput').value;
+            if (url) {
+                const base64url = urlToBase64url(url);
+                // Exibir a URL codificada em Base64URL
+                document.getElementById('result').innerText = base64url;
             } else {
-                const error = { error: "Please provide a URL parameter." };
-                document.getElementById('result').innerText = JSON.stringify(error);
+                document.getElementById('result').innerText = 'Por favor, insira uma URL.';
             }
         }
 
-        // Processa a solicitação quando a página é carregada
-        window.onload = handleRequest;
+        // Função para copiar o conteúdo do resultado para a área de transferência
+        function copyToClipboard() {
+            const resultText = document.getElementById('result');
+            const range = document.createRange();
+            range.selectNode(resultText);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            alert('Resultado copiado para a área de transferência!');
+        }
+
+        // Função para pegar o parâmetro da URL
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            const results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Verifica se há uma URL fornecida na query string e exibe o resultado
+        document.addEventListener('DOMContentLoaded', () => {
+            const url = getParameterByName('url');
+            if (url) {
+                const base64url = urlToBase64url(url);
+                document.getElementById('result').innerText = base64url;
+            }
+        });
     </script>
 </body>
 </html>
